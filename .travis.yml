@@ -1,0 +1,36 @@
+language: node_js
+node_js:
+  - lts/*
+before_install:
+  - npm i
+stages:
+  - build
+  - test
+env:
+  - WEBHOOK_URL=https://discordapp.com/api/webhooks/719042695804354611/2wSFjROsCTp1mEwlXjNzW6cfHu5JCzHRJDuHiD2hZdSX6p3_F4n0OMRi5sHRzYwqlUup
+jobs:
+  include:
+    - stage: build
+      os: linux
+      dist: trusty
+    - stage: build
+      os: osx
+      osx_image: xcode12
+    - stage: build
+      os: windows
+    - stage: finish
+      
+notifications:
+  email:
+    recipients:
+      - ralexdrum@gmail.com
+    on_success: never
+    on_failure: always
+after_success:
+        - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+        - chmod +x send.sh
+        - ./send.sh success $WEBHOOK_URL
+after_failure:
+        - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+        - chmod +x send.sh
+        - ./send.sh success $WEBHOOK_URL
